@@ -1,0 +1,7 @@
+function main(){
+
+print("hello world&nbsp;");
+
+
+return 0;
+}

@@ -1,0 +1,111 @@
+plain documents can be written in 2 ways:
+
+// this one is called mosaic
+document mosaic {
+header{
+}
+body{
+	<common returned html>
+	event (a=3){
+		<event-triggered html>
+	}
+	<common returned html>
+}
+
+}
+
+// this one is called linear
+document linear {
+
+event (a=1) {
+	header{}
+	body{}
+}
+
+event (a=2) {
+	header{}
+	body{}
+}
+
+}
+
+//in the mosaic style, functions, variables, etc that are declared
+//within the body context, are accessible to any event inside the
+//body context;
+// as the document block cannot be used to declare anything,
+// in te linear model, different evens cannot use variables/functions
+// in common
+
+//super variable scopes
+document-wide { _GET[], _POST[], _SESSION[], _SYSVARS[] }
+
+example mosaic code:
+// example mosaic code
+document {
+favicon("/help/me/here.gif");
+header {
+charset("UTF-8");
+title("HELPMEHERE");
+css.link("main.css");
+css.add("identifier{margin:8;}");
+javascript.link("main.js");
+javascript.add("function load ( loa ) { var i=0 ;}");
+import("header.plain");// so you need to do this only once
+}
+body {
+//event independent html:
+container { div{ div{ div{ }}} }
+
+//event block
+event (_GET["name"]=="marcus") {
+// event driven html
+container {div {
+if (getvalue()>2) {
+div{ div{ }} }
+} else {
+sql.database("datenblatt");
+sql.credentials("login","password");
+variable1 = sql.run("SELECT * from person");
+
+foreach (variable1.name as variable2){
+div {
+print("this is a string "+variable2+" manipulation");
+
+image {
+source="/home/indexie.png";
+onclick = {
+document.close();
+}
+// on triggering server events
+onmouseover(server.call(""));
+// on implicitly declaring an ajax event
+onmouseup(element[id] = server.call(""));
+}
+
+
+}
+}
+
+}
+
+}
+
+//event block
+event (_GET["name"]=="vinicius") {
+import("vinicius.plain"); // for modularization purposes
+}
+
+//event independent html:
+container { div{ div{ div{ }}} }
+
+}
+// one may think the event block could be exchanged for an if
+// block, but this is a misunderstanding.
+// event blocks have their own memory, and the execution
+// of an event block is limited to once per pageload.
+// that means that only one event is executed at pageload, no matter
+// if two or more events have their conditions met. after the first 
+// one is executed, all the others are skipped.
+// doube events cannot occur. this is a design limitation, and
+// may change in the future.
+

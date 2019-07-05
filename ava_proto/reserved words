@@ -1,0 +1,343 @@
+//simple datamodel:
+"datamodel user {
+primary long uid;
+text name;
+foreign hair hairtype;
+}
+
+datamodel hair {
+primary long hid;
+text color;
+text length;
+}"
+
+
+
+
+
+
+// not reserved words:
+0	statement	// atribution | funcall| methodcall | bheader | definition /;/
+0	expression	// [(}/variable|funcall|literal/[)] {[(]op expression[)]}
+0	definition	// //var|variable/ identifier [= expression] / | /function|method/ identifier([args]) block
+0	attribution	// variable = expression
+0	args		//  expression [{, expression}]
+0	funcall		// identifier([args]);
+0	bheader		// event | if | while | for | until | switch | foreach
+0	block		// /{/ [{statement}] /}/
+0	elsebl		// else [if (expression)] block
+0	ifbl		// if (expression) {elsebl}
+0	whilebl		// while (expression) block
+0	untilbl		// until (expression) block
+0	doblock		// do block /until|while/ expression ;
+0	forblock	// for (atribution, lexpression, expression) block
+0	foreachbl	// foreach (identifier [as identif2]) block
+0	switchbl	// switch (expression) /{/ [{casebl}][defaultbl] /}/
+0	casebl		// case expression block
+0	defaultbl	// default block
+0	maindecl	// function /main/() block
+0	program		// [{definition}] maindecl [{definition}]
+
+
+
+
+
+//plain reserved words
+//index	//declarations
+ 
+1		function	// function identifier(identifier[{,identifier}]) block
+2		method		// method identifier(identifier[{,identifier}]) block
+3		var		// 'var' identifier [= expression];
+4		variable	// 'variable' identifier [= expression];
+5               event           // 'event' identifier block (not a declaration)
+6		file		// file type
+7		datamodel	// datamodel identifier = string|variable;
+
+// a function is a method that returns values. 
+// in ye olde pascal:
+// method = procedure
+// function = function
+// the values returned by a function are always string type.
+// however the interpreter will evaluate their returns during expression parsing
+// nonetheless, a typecast function enclosing the function call will
+// certainly retrieve the expected data (or fail miserably, you've been warned :) )
+
+
+// an event is a method, but has its own scope (can access only super variables, can be
+// defined only globally, returns absolutely nothing and cannot be
+// referenced as a variable or called without a throw(event);
+// this is because events will be threaded in the future, so a single piece of
+// software can manage N parallel events. i.e:
+// an event that runs a query, saves it on an environment variable and sets another environment
+// variable as a complete task flag can be run while the main function of the program is
+// servicing other requests.
+// in the web version of the programming language, events will be syncronous, so in the web
+// version, the event can access global variables and functions as well.
+// note that an event is not and never will be able to trigger another event.
+
+
+	//control structures
+10		if		// if(condition) {
+11		else		// } else if (condition) { } else { }
+12		do		// do { } while (condition); or do { } until (condition);
+13		while		// while (condition) {   }
+14		until		// until (condition) {   }
+15		for		// for (pre attribution, condition, post attribution) { }
+//16		event		// just like if, but without else // FELL TO DECLARATION
+17		foreach		// foreach (arrayitem as variable) { }
+18		switch		// couldn't lose that
+19		case		// needed  
+20		default		// needed for last
+21		break 		// break is NOT a function
+
+	//SUPER VARIABLES	//rw
+50		_ARGS		//r	//arguments
+51		_GET		//r	//RESERVED for web version
+52		_POST		//r	//RESERVED for web version
+53		_SESSION 	//rw	//RESERVED for web version
+54		_STACK		//r	//should not need to access this at all
+55		_ENVIRONMENT	//rw	//environment variables array; addenv("var","value");rmenv("var");
+56		_EVENTS		//r	//events array, wanna know if an event is defined?
+57		_FUNCTIONS	//r	//should not as well
+58		_METHODS	//r	//should not as well
+59		_VARIABLES	//r	//what are you trying to do?
+
+//in an event throw context, the supervars _ARGS, _GET, _POST, _SESSION, _ENVIRONMENT
+//are passed by copy, so an event will be able to run in parallel in the future.
+
+
+
+	//built in function names
+//100		main		// program entry point (block header? accept main without proper declare?)
+101		return		// jump(pop());
+102		import		// import(file); or variable=import(file);
+103		syscall		// syscall("/usr/var/program"); or variable = syscall("/usr/var/program");
+104		push		// push(value); pushes value to stack (WARNING!)
+105		pop		// pop(); or variable=pop(); pops from stack (WARNING!)
+106		jump		// jump(addr); or jump(addr, condition); arbitrary jump (WARNING!)
+//107	:Serial.begin		// Serial.begin(baudrate);
+//108	:Serial.read		// variable = Serial.read(); or variable = Serial.read(bytes);
+//109	:Serial.available	// Serial.available() or var = Serial.available();
+//110	:Serial.print		// Serial.print(string|int) or Serial.print(variable);
+//111	:I2C.begin		// I2C.begin(frequency)
+//112	:I2C.read 		// variable = I2C.read(addr) or variable = I2C.read(addr,bytes);
+//113	:I2C.write		// I2C.write(addr, char) or I2C.write(addr, string)
+//114	:SPI.begin		// SPI.begin(frequency)
+//115	:SPI.read		// variable = SPI.read() or variable = SPI.read(bytes);
+//116	:SPI.write		// SPI.write(char) or SPI.write(string)
+117		print		// print( terminal, destination ); dest: stdout, stderr, file variable
+118		exit 		// exits program: exit;
+119		halt		// same as exit, but halt(int) returns errorcode
+120		read		// variable=read(origin); //origin can be keybd, socket, etc
+121		throw		// 'throw' identifier; //throws event
+122		eval		// evaluates expression (definitions restricted)
+123		_eval		// evaluates expression (unrestricted)
+124		date		// date("YYYY,MM,DD-HH:MM:SS"); formatted unix timestamp
+
+	//pseudoobjects
+130		math.		//mathematical pseudo Object
+131		string.		// string pseudoobject (define functions);
+132		array.		// array pseudoobject
+133		hash.		// hashtable pseudoobject
+134		file.	        // file pseudoobject
+135		database.	// database pseudo
+136		socket.		// socket pseudoobject
+137		curl.		// curl pseudoobject (depends on packet curl)
+
+
+
+
+// pseudoobjects parser identifiers
+// math == 0
+01		sqrt		// sqrt(number|variable|expression)
+02		sin		// sin(!!)
+03		cos		// cos(!!)
+04		tan		// tan(!!)
+05		cotg		//cotg(!!);
+06		atan		// atan(!!)
+07		acos		// acos(!!)
+08		asin		// asin(!!)
+09		pi		// pi (this behaves as a variable)
+10		phi		// phi	(this behaves as a variable)
+11		euler		// euler constant
+12		kepler		//kepler constant
+13		avogrado	// avogrado constant
+// string == 10
+100
+101
+102
+103
+104
+//array == 20
+200
+201
+202
+203
+204
+//hash == 30
+300
+301
+302
+303
+304
+//file == 40
+400		fopen		//variable = file.open(string|variable, mode); variable=""pointer"" or null
+401		fclose		// close (file_variable);
+402		fread		// variable = file.read(file_variable, bytes);
+403		fwrite		// file.write(file_variable, string|variable);
+404		fseek		// file.seek(file_variable, position); returns true; if EOF, returns false;
+405		frewind		// file.rewind(file_variable); (same as seek 0)
+406		fsize		// variable = file.size(file_variable);
+//database = 50
+500
+501
+502
+503
+504
+
+
+	//primitives
+150		true		//true
+151		false		//false
+152		null		//NULL
+153		nan		//not a number
+154		nop		//no operation
+155             void		//empty stuff
+
+
+	//logical compare
+200		==		//equals
+201		!=		//not equal
+202		>		//greater than
+203		>=		//greater or equal
+204		<		//lesser than
+205		<=		//lesser or equal
+	//logical operators(classic)
+206		&&		//and
+207		||		//or
+208		!		//not
+209		&|		//xor //change to $? (unused char)
+	//formal logic operators
+210		~>		//implies
+211		<~>		//bi-implies
+212		&		//formal and
+213		|		//formal or
+214             ~               //formal not
+	//one of a kind
+215		=		//assignment operator
+	//two of a kind
+216		<<		//shiftleft  ex:  a = b << 3;
+217		>>		//shiftright ex a = b >> 3;
+
+
+	//mathematical operators
+220		+		//plus
+221		-		//minus
+222		/		//divides
+223		*		//multiplies
+224		^		//powers
+225		%		//modulo
+	// i forgot you, SORRY  T.T
+226		++		//increase
+227		--		//decrease
+228		+=		//atribute sum
+229		-=		//atribute sub
+230		*=		//atribute mul
+231		/=		//atribute div
+232		^=		//atribute power
+233		%=		//atribute modulo
+//still into consideration
+//234		=&		//attribute bitwise AND
+//235		=!		//atribute bitwise NOT
+//236		=|		//atribute bitwise OR
+//237		=$		//atribute bitwise XOR
+
+
+	//separators
+240		{		//blockopen
+241		}		//blockclose
+242		(		//paropen
+243		)		//parclose
+244		[		//braopen
+245		]		//braclose
+246		;		//semicolon
+247		:		//colon
+248		#		//hash    //i guess this will fall
+249		,		//comma
+250		.		//period
+251		'spc 32'	//spc
+252		'tab 9'		//tab
+253		'uk  11'	//unknown
+254		'\r  10'	//CR
+255		'\n  13'	//\n
+256		'uk  15'	//unknown
+257		"doublequote"	//doublequote
+258		'singelquote'	//singlequote
+259		\		//reversebar
+260		@		//indirect reference to textual value of function
+
+//indirect reference operator:
+//as plain is an interpreted language, access to pointers is relatively restricted
+//an indirect reference operator can be used, for instance to change the behavior of
+//a function during program execution. i.e:
+//the program has two functions loaded in memory, function A(r,t) and function B(r,t). lets
+// assume that function B was dynamically loaded (received by a socket, for instance),
+//and we wanted to make every call to function A redirect to function b.
+//this would be accomplished by stating, during program execution that
+// '@A(r,t) = @B(r,t)'. given that the functions have the same parameters, including
+// the same parameter names, function A now would behave just like function B. Note that
+// function A code WILL be lost, since it will be exchanged for function B, textually.
+// to back up the code of function A, a secondary indirect reference operation can be
+// used: variable C = @B(r,t). in this case, the variable B holds the textual value of
+// function B, save for the function declaration.
+// to unload function B from memory, an unload action can be performed, just like with any
+// variable: unload(identifier(r,t)). the parameter name passing is a security measure, 
+// it is there just to ensure that the unloaded identifier is the function, and not an homonym
+// variable.
+// the indirect reference operations are not possible on events or variables, given that a variable
+// attribution is enough to copy its value to another variable, and an event driven code
+// would not benefit from it. anyways, an event is capable of calling functions within its
+// context, so you can code an event that calls a function, and perform this
+// update on the called function. get creative! ;)
+
+
+
+
+
+
+//hiclass (not defined yet)
+//260		'variable reference'
+//261		'function call'
+//262		'number'
+//263		'string'
+//264             'unknown identifier'
+//265		'charstring¬¬'
+
+"" 
+
+
+// escape sequences:
+// as we will deal with utf 8 strings (linux does this wherever we like it or not...)
+// we will not accept c-style escape sequences. on the other hand, it will be delivered
+// a simple scheme to escape characters inside a string.
+// the magic sequences 
+"\U+FFFF"
+
+
+math.sin
+
+
+string.remove
+
+
+
+
+
+
+
+
+
+
+
+
+

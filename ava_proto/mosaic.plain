@@ -1,0 +1,56 @@
+import "utils.plain";   //this import just shoves the target file in the caller stream
+			// must be used with caution, since every import forces the
+			// system to relocate all of the programText
+
+function lavaRoupaTodoDia(name) { //this method returns values, therefore "function";
+if (name=="marcus") {
+return true;
+} else { return false; }
+}
+
+method queAgonia() { //this method does not return values, therefore "method";
+
+print("pega a roupa SUJA\n");
+print("bota a roupa no tanque\n");
+print("bota sabão\n");
+print("esfrega saporra\n");
+print("deixa de molho uma hora\n");
+print("enxagua essa bagaça\n");
+print("pendura pra secar\n");
+}
+// we separate method from function as a means to avoid confusions between methods
+// and returnees. use of a method instead of a function in any expression will trigger
+// immediate error warnings. although it is possible to return values from methods by
+// "force", using push and pop functions at the method and at the caller, since
+// heap is individual for each function, but stack is shared between all the components of
+// the program.
+
+
+
+// this is the code entry point.
+// after loading all the file in memory and parsing all the global var, method and 
+// function definitions, the main function is called. as we are using a scripting 
+// language, main does not receive arguments, unless explicitly loaded with
+// ava file -A args;
+// the arguments are parsed as common expressions (yes, you can call with 1+1, i.e)
+// and stored in the supervar _ARGS[index];
+// this supervar cannot be written to, but reading the arguments is seamless.
+function main() {
+
+while (true) {
+var name;
+var reachar;
+print("digite seu nome:");
+while ((reachar=read())!=13) {
+if (reachar==27) exit;
+name = name+reachar;
+}
+
+if (lavaRoupaTodoDia(name) {
+queAgonia();
+}
+
+
+}
+
+}

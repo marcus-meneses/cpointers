@@ -1,0 +1,15 @@
+#ifndef IODEFNS
+#define IODEFNS
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+
+void load(char*loa);
+void throwErr(int error, char* mesg, char* mesg2);
+
+
+
+#endif

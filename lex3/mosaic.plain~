@@ -1,0 +1,59 @@
+// example mosaic code
+document {
+favicon("/help/me/here.gif");
+header {
+charset("UTF-8");
+title("HELPMEHERE");
+css.link("main.css");
+css.add("identifier{margin:8;}");
+javascript.link("main.js");
+javascript.add("function load ( loa ) { var i=0 ;}");
+import("header.plain");// so you need to do this only once
+}
+body {
+//event independent html:
+container { div{ div{ div{ }}} }
+
+//event block
+event (_GET["name"]=="marcus") {
+// event driven html
+container {div {
+if (getvalue()>2) {
+div{ div{ }} }
+} else {
+sql.database("datenblatt");
+sql.credentials("login","password");
+variable1 = sql.run("SELECT * from person");
+
+foreach (variable1.name as variable2){
+div {
+print("this is a string "+variable2+" manipulation");
+
+image {
+source="/home/indexie.png";
+onclick = {
+document.close();
+}
+// on triggering server events
+onmouseover(server.call(""));
+// on implicitly declaring an ajax event
+onmouseup(element[id] = server.call(""));
+}
+
+
+}
+}
+
+}
+
+}
+
+//event block
+event (_GET["name"]=="vinicius") {
+import("vinicius.plain"); // for modularization purposes
+}
+
+//event independent html:
+container { div{ div{ div{ }}} }
+
+}

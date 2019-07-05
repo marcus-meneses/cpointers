@@ -1,0 +1,193 @@
+
+//literal
+alphanum = ASCII - CTRL chars
+alpha = "A..Z", "a..z"
+dígito = 1|2|3|4|5|6|7|8|9|0
+op = + | - | * | / | ^ | % 
+atop =   =
+ctrl = { | } | ( | ) | [ | ] 
+comp = > | < | == | != | >= | <= 
+binop = && | ||
+unop =  !  
+incdec = ++ | --
+primitive = true | false | null
+
+
+inteiro = [+|-]dígito{dígito}                                // ex: 22, +22
+real = [+|-]dígito{dígito} . dígito{dígito}                  // ex: 22.34, -22.34
+string = "{alphanum}"				             // ex: "ABCDE2233:/"
+terminal = string | inteiro | real                           // ex: 22, 22.3, "ABC"
+variable = [_|__]alpha{alphanum}[.]{alpha{alphanum}[.]}   // ex: homies, homies.g2o
+fundecl = /function/ variable ( {variable[,]} )
+atom = variable | terminal                                   // ex: homies, "help"
+funcall = variable ( {expr | funcall[,]} )
+element = [unop]atom | funcall[incdec]
+expr = [(]element { op element} [)] {op expr}
+attrib = variable = expr
+
+
+
+// inverse logic:
+// literals
+alphanum = ASCII - CTRL chars
+alpha = "A..Z", "a..z"
+dígito = 1|2|3|4|5|6|7|8|9|0
+op = + | - | * | / | ^ | % 
+atop =   =
+ctrl = { | } | ( | ) | [ | ] 
+comp = > | < | == | != | >= | <= 
+binop = && | ||
+unop =  !  
+incdec = ++ | --
+primitive = true | false | null
+
+//terminals
+inteiro = [+|-]dígito{dígito}                                // ex: 22, +22
+real = [+|-]dígito{dígito} . dígito{dígito}                  // ex: 22.34, -22.34
+string = "{alphanum}"				             // ex: "ABCDE2233:/"
+terminal = string | inteiro | real                           // ex: 22, 22.3, "ABC"
+variable = [_|__]alpha{alphanum}[.]{alpha{alphanum}[.]}   // ex: homies, homies.g2o
+atom = [unop|+|-]variable[incdec] | terminal
+// SUPERVARIABLES: _GET, _POST, _SESSION
+// SUPEROBJECTS: server, client
+
+
+program: header body
+	header: /header {/import {clientimport | serverimport } { ///document header definitions/// } /}/
+		clientimport: #[variable=]/client.import/ filename 
+		serverimport: #[variable=]/server.import/ filename
+			filename: string
+	body: /body {/ serverevent {serverevent} {clientevent} {funcdeclare} {vardeclare} {funcall}/}/   //these vars and funcs are global-scope
+		funcdeclare: server|client . /name/({variable}) block
+		vardeclare: variable = expression
+			expression: [(] [(] atom | funcall {op atom | funcall} [)] {op expression} [)]
+ 				funcall: [unop|+|-]variable({expression})[incdec]
+		serverevent: /server.on/ (logexpression)  block 
+			logexpression: [(] [(]expression {comp expression}[)]{comp logexpression}[)]
+			block: /{/{ifblock}{forblock}{foreachblock}{doblock}{whileblock}{visualelement}{vardeclare}{funcall}{funcdeclare}/}/
+				ifblock: if (logexpression) block 
+				forblock: for (vardeclare, logexpression, expression) block
+				foreachblock: foreach (variable [as variable]) block
+				doblock: do block while (logexpression)
+				whileblock: while (logexpression) block
+
+
+
+
+
+
+
+
+
+
+
+
+header {
+//no functions and no variables except for Variable=server|client.import filename
+//these variables are global scope and must carry text/data only. for runtime loading of
+// external files (server-side only) consider using variable=server.readfile (inside at least the body section)
+// example:
+#client.import /js/jquery1.js
+#client.import /css/bootstrap.css
+#client.import /js/bootstrap.js
+#server.import bootstrap.plain // rendering file for bootstrap visual elements
+#ubervariable = server.import longarray.plain  // a long array, putting it on this file would be annoying
+
+}
+body {
+
+	server.consumearray(arrayvar){
+		// this function is global to the document (any server event will have access to it)
+		if (arrayvar[1]=="marcus") {
+
+			html {
+			// an html block returns (yikes) pure HTML to the client. Avoid that, it is here only for special cases
+			// html blocks accept nothing but a bunch of text. text written here will not be processed. at all.
+			}
+
+			container { // the container element must be defined in the bootstrap.plain document
+			staticID = "containerZero"; // avoids autosetting id for the element (and for the behaviors inside)
+			staticName = "yikes"; // set a static name. autoset names are == autoset ids
+
+
+			foreach (arrayvar[1].debts as debtie) {  //a foreach creating divs
+
+			   div {
+				echo "debt:"+debtie.id+"\n";
+				echo "value:"+debtie.value+"\n";
+
+			
+			   image {
+				src = "/img/peng.png"
+
+			     server.onclick {
+				// now the addons start;
+				// this block creates javascript on client side,
+				// but works a little different.
+				// it creates a xmlhttprequest with the required method
+				// and with the variables comma-separated in the next argument
+				// server.onClick, onMouseOver, Onmouseout always create httprequests,
+				// so we don't need to program ajax stuff
+				// this is not a common block, it can only reference server actions
+				// and attribute them to "variables" client-side. well, you could use any
+				// client-side script here:
+					client {
+					console.echo("HI!");
+					}
+				parent.html = server.action(POST, "otherval=false, thisval=true");	
+			     }
+
+			    }
+				client.onmouseover(/id/ | /class/ | /type/, override (true/false) ) {
+					//creates the onmouseover event on the client javascript (using jquery notation).
+					// the active element is the first uptree from this block. it would be the <div>
+					// remember this is a bunch of text for the interpreter, so write your javascript well.
+					// the argument tells the interpreter wich kind of jquery event must be generated
+					// if id is provided, it will generate an event for each div generated
+					// if class, one for the whole class, and if type, one for all the divs
+					// if override is true, it will override previous definitions of the event
+				} 
+			   }
+
+			}
+
+				client.onclick() {
+					//creates the onclick event on the client javascript (using jquery notation).
+					// the active element is the first uptree from this block. it would be the <container>
+					// remember this is a bunch of text for the interpreter, so write your javascript well.
+				} 
+
+
+
+			}
+
+		}
+	}
+
+server.on (_GET["thisval"]==true) {
+
+server.consumearray(ubervariable);
+
+
+}
+
+server.on (null) {
+
+this event is called whenever there is no event called.
+
+
+}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+

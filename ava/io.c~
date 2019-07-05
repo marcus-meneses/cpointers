@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+
+
+
+char * programText=NULL;     // our program resides here
+long instructionPointer=0;   // our virtual instruction pointer
+
+
+
+void load(char*loa) {
+long i=0;
+FILE * source;
+source = fopen(loa, "rb");
+if (source == NULL) {
+throwErr(200, "cannot open file", loa);
+//printf("\nERROR - cannot open file: %s\n", loa);
+} else {
+long filesize;
+fseek(source,0, SEEK_END);
+filesize=ftell(source);
+rewind(source);
+//printf("\nfile %s size: %i Bytes\n", loa, filesize);
+programText = malloc((filesize*(sizeof(char)))+1);
+//printf("\nfloading at position %x\n", programText);
+fread(programText, sizeof(char), filesize, source);
+fclose(source);
+programText[filesize]=0;
+}
+}
+
+
+
+void throwErr(int error, char* mesg, char* mesg2){
+
+switch (error){
+case 1:
+printf("\nERROR %i - empty stack \n",error);
+break;
+default:
+printf("\nERROR %i - %s %s \n",error,mesg,mesg2);
+break;
+
+}
+
+//errors break execution forever
+exit(1);
+
+}

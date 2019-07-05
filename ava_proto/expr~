@@ -1,0 +1,26 @@
+
+
+
+
+
+
+/*
+#define TOKEN_EOF            -1   // END OF FILE    \0
+#define TOKEN_DEF            -2   // DEFINITION     function, var
+#define TOKEN_IDF            -3   // IDENTIFIER     variablename, functionname, mumbojumbo
+#define TOKEN_BHD            -4   // BLOCK HEADERS  for, while, if, else, do
+#define TOKEN_NBR            -5   // NUMBER {[0..9]}[.]{[0..9]}
+#define TOKEN_SPR            -6   // SEPARATOR  {, }, whitespace, (, ), [, ], :, ;,  comma, ", '
+#define TOKEN_MOP            -7   // MATHEMATICAL OPERATOR +, -, *, /, ^, % 
+#define TOKEN_LOP            -8   // LOGICAL OPERATOR >, <, =, &, |, ! 
+#define TOKEN_BIF            -9   // BUILT-IN FUNCTION 
+#define TOKEN_STR            -10  // STRINGS (yeah!) 
+#define TOKEN_PMT            -11  // primitives : true, false, null, nan, void
+#define TOKEN_PSO            -12  // pseudo Objects (built in objects that offer specific functions)
+#define TOKEN_DFF	     -13  // programmer-defined function
+#define TOKEN_VAR	     -14  // programmer-defined variables (plus supervars);
+*/
+
+
+var au=4+1+1;
+
